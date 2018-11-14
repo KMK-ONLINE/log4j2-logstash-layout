@@ -40,10 +40,12 @@ class MessageResolver implements TemplateResolver {
 
     private JsonNode resolveText(Message message) {
         String formattedMessage = message.getFormattedMessage();
-        boolean messageExcluded = StringUtils.isEmpty(formattedMessage) && context.isEmptyPropertyExclusionEnabled();
+        String truncatedMessage = formattedMessage.substring(0, Math.min(formattedMessage.length(), 31744));
+
+        boolean messageExcluded = StringUtils.isEmpty(truncatedMessage) && context.isEmptyPropertyExclusionEnabled();
         return messageExcluded
                 ? NullNode.getInstance()
-                : new TextNode(formattedMessage);
+                : new TextNode(truncatedMessage);
     }
 
     private JsonNode resolveJson(Message message) {

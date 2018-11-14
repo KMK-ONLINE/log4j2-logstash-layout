@@ -25,10 +25,12 @@ class ExceptionMessageResolver implements TemplateResolver {
             return NullNode.getInstance();
         }
         String exceptionMessage = exception.getMessage();
-        boolean exceptionMessageExcluded = StringUtils.isEmpty(exceptionMessage) && context.isEmptyPropertyExclusionEnabled();
+        String truncatedMessage = exceptionMessage.substring(0, Math.min(exceptionMessage.length(), 31744));
+
+        boolean exceptionMessageExcluded = StringUtils.isEmpty(truncatedMessage) && context.isEmptyPropertyExclusionEnabled();
         return exceptionMessageExcluded
                 ? NullNode.getInstance()
-                : new TextNode(exceptionMessage);
+                : new TextNode(truncatedMessage);
     }
 
 }
